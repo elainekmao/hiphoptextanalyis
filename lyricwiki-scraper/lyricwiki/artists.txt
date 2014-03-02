@@ -1,0 +1,82 @@
+2LiveCrew
+2Pac
+50 Cent
+A Tribe Called Quest
+Arrested Development
+Beastie Boys
+Big Daddy Kane
+Big L*
+Black Moon*
+Bone Thugs-N-Harmony
+Bow Wow
+Busta Rhymes
+Chingy
+Coolio
+Cypress Hill
+D12
+De La Soul
+DJ Jazzy Jeff & The Fresh Prince
+DMX
+Dr Dre
+Drake
+E-40
+Eazy-E
+Eminem
+Fugees
+G-Unit
+Game
+Gang Starr*
+Goodie Mob
+Grandmaster Flash
+Grandmaster Flash and the Furious Five
+Ice Cube
+Ice-T
+Ja Rule
+Jay-Z
+Juvenile
+Kanye West
+Kool G Rap*
+KRS-One
+Kurtis Blow*
+Lauryn Hill
+Lil' Kim
+Lil Wayne
+LL Cool J
+Ludacris
+Mase
+Master P
+MC Hammer
+Missy Elliott
+Mobb Deep
+Nas
+Nelly
+Notorious B.I.G.
+N.W.A.
+Outkast
+Public Enemy
+Puff Daddy/P. Diddy/Diddy
+Queen Latifah
+Rakim
+Run-D.M.C.
+Salt-N-Pepa
+Scarface
+Schoolly D*
+Snoop
+T.I.
+Tha Dogg Pound
+The Sugarhill Gang
+Three 6 Mafia
+Tone-Lōc
+Too $hort
+TRU
+UGK*
+Vanilla Ice
+Warren G
+Will Smith
+Wiz Khalifa
+Wu-Tang Clan
+
+http://www.bet.com/music/photos/2011/09/50-most-influential-rappers.html#!090611-music-most-influential-rappers-scarface
+
+Run each spider with the command:
+scrapy [spider_name] -o [output_file_name] -t csv
