@@ -6,35 +6,44 @@ Arrested Development
 Beastie Boys
 Big Daddy Kane
 Big L*
+Big Punisher
 Black Moon*
+Black Sheep
 Bone Thugs-N-Harmony
 Bow Wow
 Busta Rhymes
 Chingy
+Common
 Coolio
 Cypress Hill
 D12
 De La Soul
+Del Tha Funkee Homosapien
 DJ Jazzy Jeff & The Fresh Prince
 DMX
 Dr Dre
-Drake
 E-40
 Eazy-E
 Eminem
+Eve
 Fugees
 G-Unit
 Game
 Gang Starr*
+Geto Boys
 Goodie Mob
 Grandmaster Flash
 Grandmaster Flash and the Furious Five
+GZA
 Ice Cube
 Ice-T
 Ja Rule
 Jay-Z
+Jermaine Dupri
 Juvenile
 Kanye West
+Kendrick Lamar
+Kid Cudi
 Kool G Rap*
 KRS-One
 Kurtis Blow*
@@ -43,27 +52,41 @@ Lil' Kim
 Lil Wayne
 LL Cool J
 Ludacris
+Lupe Fiasco
+Madvillain
+Mary J. Blige
 Mase
 Master P
 MC Hammer
 Missy Elliott
 Mobb Deep
+Mos Def
 Nas
+Naughty By Nature
 Nelly
 Notorious B.I.G.
 N.W.A.
+Ol' Dirty Bastard
 Outkast
 Public Enemy
 Puff Daddy/P. Diddy/Diddy
 Queen Latifah
 Rakim
+Rick Ross
 Run-D.M.C.
 Salt-N-Pepa
 Scarface
 Schoolly D*
+Skee-Lo
+Slick Rick
 Snoop
 T.I.
+Talib Kweli
 Tha Dogg Pound
+The Diplomats
+The Game
+The Pharcyde
+The Roots
 The Sugarhill Gang
 Three 6 Mafia
 Tone-Lōc
@@ -75,8 +98,11 @@ Warren G
 Will Smith
 Wiz Khalifa
 Wu-Tang Clan
-
-http://www.bet.com/music/photos/2011/09/50-most-influential-rappers.html#!090611-music-most-influential-rappers-scarface
+Wyclef Jean
+Young Jeezy
 
 Run each spider with the command:
 scrapy [spider_name] -o [output_file_name] -t csv
+
+
+for f in *.csv; do python process-csv.py "$f" "${f%.csv}-processed.csv"; done
