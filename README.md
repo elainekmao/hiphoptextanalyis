@@ -1,4 +1,4 @@
-lyricwiki-scraper
+hiphoptextanalysis
 =================
 
-Scraper to extract hip-hop lyrics from LyricWiki for master's project
+Applying text analysis techniques from information retrieval and document mining to analyze hip-hop lyrics from American rappers through the years. 
