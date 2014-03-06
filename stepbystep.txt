@@ -1,0 +1,7 @@
+$ scrapy crawl [spider_name] -o [output_file_name] -t csv
+$ mv *.csv scraped
+$ for f in *.csv; do python process-csv.py "$f" "${f%.csv}-processed.csv"; done
+$ mv *-processed.csv processed
+$ mv *.csv raw
+$ cd processed
+$ for f in *.csv; do python consolidate_lyrics.py "$f" ; done --> creates corpus alllyricsbyartist
