@@ -32,7 +32,6 @@ Eminem
 Eve
 Fugees
 G-Unit
-Game
 Gang Starr*
 Geto Boys
 Ghostface Killah
@@ -116,7 +115,7 @@ Wyclef Jean
 Young Jeezy
 
 Run each spider with the command:
-scrapy [spider_name] -o [output_file_name] -t csv
+scrapy crawl [spider_name] -o [output_file_name] -t csv
 
 
 for f in *.csv; do python process-csv.py "$f" "${f%.csv}-processed.csv"; done
