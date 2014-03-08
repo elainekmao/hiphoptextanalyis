@@ -14,11 +14,11 @@ def get_region(i):
         return 2
     elif i in range(80,101):
         return 3
-    elif i in range(101,134):
+    elif i in range(101,135):
         return 4
 
 nodes_list = []
-for i in range(1,134):
+for i in range(1,135):
     entry = {'name': names[i], 'group': get_region(i)}
     nodes_list.append(entry)
 
@@ -26,8 +26,24 @@ link_list = []
 for i in range(0,134):
     for j in range(i,134):
         if i!= j:
-            entry = {'source': i, 'target': j, 'value': matrix[i][j].split()[1][:-1]}
-            link_list.append(entry)
+            value = float(matrix[i][j].split()[1][:-1])
+            if value >= 0.046924364:
+                entry = {'source': i, 'target': j, 'value': value}
+                link_list.append(entry)
 
-with open('hiphop.json', 'a') as jsonfile:
-    json.dump({'nodes': nodes_list, 'links': link_list}, jsonfile)
+with open('hiphop_2.json', 'a') as jsonfile:
+    jsonfile.write('{')
+    jsonfile.write('"nodes": [')
+    for i in range(len(nodes_list)):
+        json.dump(nodes_list[i], jsonfile)
+        jsonfile.write(',')
+        jsonfile.write('\n')
+    jsonfile.write('],')
+    jsonfile.write('"links": [')
+    for i in range(len(link_list)):
+        json.dump(link_list[i], jsonfile)
+        jsonfile.write(',')
+        jsonfile.write('\n')
+    jsonfile.write(']')
+    jsonfile.write('}')
+

@@ -31,20 +31,18 @@
       .attr("width", width)
       .attr("height", height);
 
-    d3.json("hiphop.json", function(error, graph) {
-      alert(graph)
+    d3.json("hiphop.json", function(graph) {
+      console.log(graph.links)
       force
         .nodes(graph.nodes)
         .links(graph.links)
         .start();
 
-    console.log(graph.link)
-
     var link = svg.selectAll(".link")
         .data(graph.links)
       .enter().append("line")
         .attr("class", "link")
-        .style("stroke-width", function(d) { return d.value; });
+        .style("stroke-width", function(d) { return 3*d.value; });
 
     var node = svg.selectAll(".node")
         .data(graph.nodes)
