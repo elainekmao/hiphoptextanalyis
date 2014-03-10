@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>Force Directed Layout of Hip-Hop Artists</title>
     <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>
     <style>
       .node {
@@ -20,7 +21,7 @@
     var width = 960,
         height = 500;
 
-    var color = d3.scale.category20();
+    var color = d3.scale.category10();
 
     var force = d3.layout.force()
       .charge(-120)

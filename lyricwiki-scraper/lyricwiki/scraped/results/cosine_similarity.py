@@ -7,4 +7,3 @@ similarity_matrix = csv.writer(open("tfidf_matrix.csv", 'a'))
 
 for similarities in index:
     similarity_matrix.writerow(list(enumerate(similarities)))
-

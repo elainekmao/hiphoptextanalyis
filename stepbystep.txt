@@ -4,4 +4,10 @@ $ for f in *.csv; do python process-csv.py "$f" "${f%.csv}-processed.csv"; done
 $ mv *-processed.csv processed
 $ mv *.csv raw
 $ cd processed
-$ for f in *.csv; do python consolidate_lyrics.py "$f" ; done --> creates corpus alllyricsbyartist
+$ for f in *.csv; do python consolidate_lyrics.py "$f" ; done --> creates corpus alllyricsbyartist, in order: east, midwest, south, west
+$ python make_dictionary.py
+$ python model.py
+$ python cosine_similarity.py
+$ python simplify_matrix.py
+$ python make_nodes.py
+$ python -m SimpleHTTPServer
