@@ -22,10 +22,15 @@ def main (document):
 def clean_text (text):
     lowercase_text = text.lower()
     unhyphenated = string.replace(lowercase_text, "-", " ")
-    spaced_commas = string.replace(unhyphenated, ",", ", ")
-    unpunctuated_text = string.translate(spaced_commas, None, string.punctuation)
+    printable = filter(lambda x: x in string.printable, unhyphenated)
+    spaced_commas = string.replace(printable, ",", ", ")
+    n_standardize = string.replace(spaced_commas, "niggaz", "niggas")
+    unpunctuated_text = string.translate(n_standardize, None, string.punctuation)
     split_text = unpunctuated_text.split()
-    stoplist = stopwords.words('english') + ['rapgenius.com', 'chorus', 'verse', '2x', '3x', '4x', '5x', '6x', '7x', '8x', '9x', '10x,' 'hook', 'intro', 'outro', 'u', '2', '4', 'em', 'dem', 'ya', 'hes', 'shes', 'im', 'theyre', 'youll', 'ima']
+    rapwords = ['rapgenius.com', 'chorus', 'verse', '2x', '3x', '4x', '5x', '6x', '7x', '8x', 
+        '9x', '10x,' 'hook', 'intro', 'outro', 'u', '2', '4', 'em', 'dem', 'ya', 'hes', 'shes', 'im', 'theyre', 'youll', 'ima', 
+        'iim', 'simi', 'hunh']
+    stoplist = stopwords.words('english') + rapwords
     important_text = filter(lambda x: x not in stoplist, split_text)
     return important_text
 

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <title>Rap Lyrics Visualization</title>
+        <script src="js/sigma.min.js"></script>
+        <script src="js/plugins/sigma.parsers.gexf.min.js"></script>
+        <script src="js/plugins/sigma.layout.forceAtlas2.min.js"></script>
+        <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+        <style>
+            #sigma-container {
+                max-width: 960px;
+                height: 500px;
+                margin: auto;
+            }
+          .node {
+            stroke: #000;
+            stroke-width: 1.5px;
+          }
+
+          .link {
+            stroke: #999;
+            stroke-opacity: .6;
+          }
+        </style>
+    </head>
+    <body>
+        <div id="sigma-container"></div>
+        <script>
+         
+sigma.classes.graph.addMethod('neighbors', function(nodeId) {
+    var k,
+        neighbors = {},
+        index = this.allNeighborsIndex[nodeId] || {};
+
+    for (k in index)
+      neighbors[k] = this.nodesIndex[k];
+
+    return neighbors;
+  });
+
+  sigma.parsers.gexf(
+    'hiphopbyregion.gexf',
+    {
+      container: 'sigma-container',
+      settings: {
+        defaultLabelColor: '#FFF',
+        defaultLabelSize:14,
+        defaultLabelBGColor: '#FFF',
+        defaultLabelHoverColor: '#000',
+        minNodeSize:5,
+        maxNodeSize:5,
+        defaultEdgeColor: '#FFF',
+        edgeColor: "default"
+      }
+    },
+    function(s) {
+      // We first need to save the original colors of our
+      // nodes and edges, like this:
+      s.graph.nodes().forEach(function(n) {
+        n.originalColor = n.color;
+      });
+      s.graph.edges().forEach(function(e) {
+        e.originalColor = e.color;
+      });
+
+      // When a node is clicked, we check for each node
+      // if it is a neighbor of the clicked one. If not,
+      // we set its color as grey, and else, it takes its
+      // original color.
+      // We do the same for the edges, and we only keep
+      // edges that have both extremities colored.
+      s.bind('clickNode', function(e) {
+        var nodeId = e.data.node.id,
+            toKeep = s.graph.neighbors(nodeId);
+        toKeep[nodeId] = e.data.node;
+
+        s.graph.nodes().forEach(function(n) {
+          if (toKeep[n.id])
+            n.color = n.originalColor;
+          else
+            n.color = '#eee';
+        });
+
+        s.graph.edges().forEach(function(e) {
+          if (toKeep[e.source] && toKeep[e.target])
+            e.color = '#eee';
+          else
+            e.color = e.originalColor;
+        });
+        s.refresh();
+      });
+
+      s.bind('clickStage', function(e) {
+        s.graph.nodes().forEach(function(n) {
+          n.color = n.originalColor;
+        });
+
+        s.graph.edges().forEach(function(e) {
+          e.color = e.originalColor;
+        });
+
+        // Same as in the previous event:
+        s.refresh();
+      });
+    }
+  );
+</script>
+</body>
+</html>
