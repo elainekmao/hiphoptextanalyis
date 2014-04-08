@@ -1,73 +1,271 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Force Directed Layout of Hip-Hop Artists</title>
+  <title>Rap Lyrics Text Analysis</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>
     <style>
-      .node {
-        stroke: #fff;
-        stroke-width: 1.5px;
+      .node {        
       }
 
       .link {
         stroke: #999;
         stroke-opacity: .6;
       }
+
+      circle {
+        stroke: #fff;
+        stroke-width: 1.5px;
+        cursor: pointer;
+      }
+
+      circle.sibling {
+        fill: #455EE8;
+      }
+
+      text {
+        color:black;
+        font:sans-serif;
+        font-size:8px;
+        pointer-events:none;
+        text-shadow: 2px 2px #fff;
+      }
+
+      .label {
+        visibility:hidden;
+      }
+
+      .label.on {
+        visibility:visible;
+      }
+
+      p {
+        font-size: 10px;
+        margin-bottom: 2px;
+      }
+
+      #legend{
+        height:20;
+      }
+
     </style>
 </head>
 <body>
+  <div class = "container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <h2>Text Analysis of Rap Lyrics</h2>
+      </div>
+    </div>
+    <div class = "row">
+      <div id = "legend" class = "col-md-1"></div>
+      <div id = "graph" class = "col-md-8"></div>
+      <div id = "info" class = "col-md-3"><h5>Welcome! This network visualizes lyrical similarity between prominent American rappers. Click on a node to begin.</h5></div>
+    </div>
+  </div>
     <script type="text/javascript">
 
     var width = 960,
-        height = 500;
+        height = 500,
+        SHOW_THRESHOLD = 2.5
+        r = 5;
+
+    var currentOffset = {x:0, y:0};
+    var currentZoom = 1.0;
+
+    var xScale = d3.scale.linear()
+      .domain([0,width])
+      .range([0,width]);
+    var yScale = d3.scale.linear()
+      .domain([0,height])
+      .range([0,height]);
+    var zoomScale = d3.scale.linear()
+      .domain([1,6])
+      .range([1,6])
+      .clamp(true);
 
     var color = d3.scale.category10();
 
     var force = d3.layout.force()
-      .charge(-30)
-      <!--.linkDistance(30)-->
-      .size([width, height]);
-    
-    var svg = d3.select("body").append("svg")
-      .attr("width", width)
-      .attr("height", height);
+      .charge(-320)
+      .size([width, height])
+      .gravity(0.5)
+      .linkStrength( function(d,idx) { return d.weight; } );
+
+    var svg = d3.select("#graph").append("svg");
+
+    rapperInfoDiv = d3.select("#info");
 
     d3.json("hiphop.json", function(graph) {
-      console.log(graph.links)
       force
         .nodes(graph.nodes)
         .links(graph.links)
-        .linkDistance( function(d) { return 20*d.value; })
+        .linkDistance( function(d,idx) {return 1/d.weight; })
+        .linkStrength( function(d,idx) { return d.weight; } )
         .start();
 
-    var link = svg.selectAll(".link")
-        .data(graph.links)
-      .enter().append("line")
-        .attr("class", "link")
-        .style("stroke-width", function(d) { return 3*d.value; });
+    var link = svg.selectAll("line.link")
+        .data(force.links())
+        .enter().append("line")
+        .attr("class", "link");
 
     var node = svg.selectAll(".node")
-        .data(graph.nodes)
-      .enter().append("circle")
-        .attr("class", "node")
-        .attr("r", 5)
-        .style("fill", function(d) { return color(d.group); })
-        .call(force.drag);
+        .data(force.nodes())
+        .enter().append("g")
+        .attr("class", "node");
 
-    node.append("title")
-        .text(function(d) { return d.name; });
+    node.append("circle")
+        .attr("r", 6)
+        .attr("id", function(d) { return "circle" + d.index})
+        .attr('pointer-events', 'all')
+        .on("click", function(d) { showInfoPanel(d); } )
+        .on("mouseover", function(d) { highlightGraphNode(d,true,this);  } )
+        .on("mouseout",  function(d) { highlightGraphNode(d,false,this); } )
+        .style("fill", function(d) { return color(d.group); }); 
+
+    node.append("text")
+    .attr("x", "-2em")
+    .attr("y", "-.3em")
+    .attr("class", "label")
+    .attr('id', function(d) { return "label" + d.index; } )
+    .text(function(d) { return d.name; });
+
+    var regions = ["East Coast", "Midwest", "South", "West Coast"];
+    var legend_color = d3.scale.category10();
+
+    var legend = d3.select("#legend").append("svg")
+      .attr("class", "legend")
+      .attr("width", width)
+      .attr("height", height)
+      .selectAll("g")
+        .data(regions)
+        .enter().append("g")
+        .attr("transform", function(d, i) { return "translate(50, " + (400 + i * 20) + ")"; });
+
+    legend.append("circle")
+        .attr("r", 6)
+        .style("fill", legend_color);
+
+    legend.append("text")
+        .attr("x", 24)
+        .attr("y", 0)
+        .attr("dy", ".35em")
+        .text(function(d) { return d; });
+
+    function highlightGraphNode(node,on) {
+      clearSelection();
+      circle = d3.select('#circle' + node.index);
+      label  = d3.select('#label' + node.index);
+      if (on) {
+      svg.selectAll("circle, line").style("opacity", 0.1)
+      svg.selectAll("line").filter(function(d) {
+            return d.source.index == node.index || d.target.index == node.index;}).style("opacity", 1);
+      circle
+        .classed( 'main', on )
+        .transition()
+        .duration(500)
+        .style("opacity", 1)
+        .attr("r", 12);
+      label
+        .classed( 'on', true);
+      Object(node.links).forEach( function(id) {
+        d3.select("#circle"+id).style("opacity", 0.8);
+      } );
+    }
+    else {
+      svg.selectAll("circle, line").style("opacity", 1)
+      circle
+        .transition()
+        .duration(500)
+        .attr("r", 6);
+      label
+        .classed("on", false);
+    }
+  };
+
+    function getRapperInfo(n, nodes) {
+      info = '<h4>' + n.name + '</h4>';
+      info += '<div class=f><span class=l>Top Words</span>: ';
+      info += '<br>';
+      n.words.forEach (function(w, i) {
+        info += '<p>' + (i + 1) + '. ' + w + '</p>';
+        i + 1;
+      })
+      if(n.links.length != 0) {
+        sorted_list = (graph.links).filter(function(d) {
+            return d.source.index == n.index || d.target.index == n.index;}).sort( function(a,b) {
+              if (a.weight > b.weight) {
+                return -1}
+              else {
+                return 1}
+            });
+        info += '<div class=f><span class=l>Most Similar Artists</span>: ';
+        info += '<br><p>';
+        var similar_list = [];
+        sorted_list.forEach( function (l) {
+          if (l.source.index == n.index) {
+            similar_list.push(l.target.index)
+          }
+          else {
+            similar_list.push(l.source.index)
+          }
+        });
+        l = similar_list.length;
+        similar_list.forEach( function(idx, j) {
+          if (j + 1 < l) {
+            info += '<a href="javascript:void(0);" onclick="selectRapper('  
+            + idx + ');">' + graph.nodes[idx]["name"] + '</a>' + ', '
+            }
+          else {
+            info += '<a href="javascript:void(0);" onclick="selectRapper('  
+            + idx + ');">' + graph.nodes[idx]["name"] + '</a>'
+            }
+          j + 1;
+          });
+      info += '</p>';
+    }
+    else {
+      info += '<div class=f><span class=l>Most Similar Artists</span>: ';
+      info += '<br><p>There are no similar artists.</p>';
+    }
+    return info;
+  }
+
+    function showInfoPanel(node) {
+      rapperInfoDiv
+        .html( getRapperInfo(node,graph.nodes) );
+    }
+
+    selectRapper = function(node) {
+      clearSelection();
+      highlightGraphNode(graph.nodes[node], true);
+      showInfoPanel(graph.nodes[node]);
+    }
+
+    clearSelection = function() {
+      svg.selectAll("circle").attr("r", 6);
+      svg.selectAll("text").classed("on", false);
+      rapperInfoDiv.empty();
+    }
 
     force.on("tick", function() {
-      link.attr("x1", function(d) { return d.source.x; })
-          .attr("y1", function(d) { return d.source.y; })
-          .attr("x2", function(d) { return d.target.x; })
-          .attr("y2", function(d) { return d.target.y; });
+        link.attr("x1", function(d) { return d.source.x; })
+              .attr("y1", function(d) { return d.source.y; })
+              .attr("x2", function(d) { return d.target.x; })
+              .attr("y2", function(d) { return d.target.y; });
 
-      node.attr("cx", function(d) { return d.x; })
-          .attr("cy", function(d) { return d.y; });
+        node
+            .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+            .attr("cx", function(d) { return d.x = Math.max(20, Math.min(width - 20, d.x)); })
+            .attr("cy", function(d) { return d.y = Math.max(20, Math.min(height - 20, d.y)); });
     });
-  });
-
+    var k = 0;
+    while ((force.alpha() > 1e-2) && (k < 150)) {
+    force.tick(),
+    k = k + 1;
+    };
+    force.stop();
+});
     </script>
 </body>
 </html>
